@@ -10,8 +10,8 @@ namespace App
     {
         public static void Main(string[] args)
         {
-            double a = 0;
-            double b = 4;
+            double a = 1;
+            double b = 9;
             double result;
             double misMatch;
 
@@ -33,7 +33,7 @@ namespace App
             for (int i = 0; i < N.Length; i++)
             {
                 result = GaussianQuadrature3rd.Calculate(a, b, N[i]);
-                misMatch = Math.Abs(result - GaussianQuadrature3rd.Calculate(a, b, 2 * N[i])) / (Math.Pow(2, 2) - 1);
+                misMatch = Math.Abs(result - GaussianQuadrature3rd.Calculate(a, b, 2 * N[i])) / (Math.Pow(2, 4) - 1);
                 Console.WriteLine("N = {0} result: {1} Runge's rule: {2}", N[i], result, misMatch);
             }
 
@@ -42,8 +42,7 @@ namespace App
 
         public static double Function(double x)
         {
-            return x * Math.Pow(Math.E, 2 * x);
-            //return Math.Sqrt(x) * (1 + Math.Sqrt(x));
+            return Math.Sqrt(x) * (1 + Math.Sqrt(x));
         }
     }
 }
