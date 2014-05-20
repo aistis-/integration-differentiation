@@ -12,7 +12,7 @@ namespace App
         {
             double sum = 0;
 
-            double h = (b - a) / (N - 1);
+            double h = (b - a) / N;
             double x;
             double xs;
             double dx;

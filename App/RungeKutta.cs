@@ -15,10 +15,10 @@ namespace App
             double u = 1;
             double x = a;
 
-            while (x <= b)
+            do
             {
-                double k1 = Program.Function2(x, u);
-                double k2 = Program.Function2(x + h / 2.0, u + h * k1 / 2.0);
+                double k1 = h * Program.Function2(x, u);
+                double k2 = h * Program.Function2(x + h / 2.0, u + k1 / 2.0);
 
                 if (print)
                 {
@@ -27,8 +27,12 @@ namespace App
                 }
 
                 x += h;
-                u += h * k2;
-            }
+
+                if (x <= b)
+                {
+                    u += k2;
+                }
+            } while (x <= b + h / 2.0);
 
             if (print)
             {

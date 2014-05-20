@@ -11,7 +11,7 @@ namespace App
         public static double Calculate(double a, double b, int N)
         {
             double sum = 0;
-            double h = (b - a) / (N - 1); // step size
+            double h = (b - a) / N; // step size
 
 
             for (int i = 0; i < N; i++)

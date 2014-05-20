@@ -13,44 +13,117 @@ namespace App
             double a = 1;
             double b = 9;
             double result;
-            double misMatch;
+            double nextResult;
+            double misMatch = -1;
+            double e = 0.001;
+            double ratio;
+            double previousMismatch = -1; ;
 
-            int[] N = {5, 10, 20, 40, 100, 500, 1000, 10000};
+            int N = 1;
 
             Console.WriteLine("Calculations with trapezoidal rule");
 
-            for (int i = 0; i < N.Length; i++)
+            result = TrapezoidalRule.Calculate(a, b, N);
+
+            Console.WriteLine("N = {0} result: {1}", N, result);
+
+            while (misMatch > e || misMatch == -1)
             {
-                result = TrapezoidalRule.Calculate(a, b, N[i]);
-                misMatch = Math.Abs(result - TrapezoidalRule.Calculate(a, b, 2 * N[i])) / (Math.Pow(2, 2) - 1);
-                Console.WriteLine("N = {0} result: {1} Runge's rule: {2}", N[i], result, misMatch);
+                N *= 2;
+
+                nextResult = TrapezoidalRule.Calculate(a, b, N);
+                misMatch = Math.Abs(result - nextResult) / (Math.Pow(2, 2) - 1);
+
+                if (-1 == previousMismatch)
+                {
+                    ratio = 0;
+                }
+                else
+                {
+                    ratio = previousMismatch / misMatch;
+                }
+
+                previousMismatch = misMatch;
+
+                Console.WriteLine("N = {0} result: {1} Runge's rule: {2}\nRatio: {3}\n", N, nextResult, misMatch, ratio);
+
+                result = nextResult;
             }
 
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine("Calculations with Gaussian rule (3rd)");
 
-            for (int i = 0; i < N.Length; i++)
+            N = 1;
+            misMatch = -1;
+            previousMismatch = -1;
+
+            result = GaussianQuadrature3rd.Calculate(a, b, N);
+
+            Console.WriteLine("N = {0} result: {1}", N, result);
+
+            while (misMatch > e || misMatch == -1)
             {
-                result = GaussianQuadrature3rd.Calculate(a, b, N[i]);
-                misMatch = Math.Abs(result - GaussianQuadrature3rd.Calculate(a, b, 2 * N[i])) / (Math.Pow(2, 4) - 1);
-                Console.WriteLine("N = {0} result: {1} Runge's rule: {2}", N[i], result, misMatch);
+                N *= 2;
+
+                nextResult = GaussianQuadrature3rd.Calculate(a, b, N);
+                misMatch = Math.Abs(result - nextResult) / (Math.Pow(2, 4) - 1);
+
+                if (-1 == previousMismatch)
+                {
+                    ratio = 0;
+                }
+                else
+                {
+                    ratio = previousMismatch / misMatch;
+                }
+
+                previousMismatch = misMatch;
+
+                Console.WriteLine("N = {0} result: {1} Runge's rule: {2}\nRatio: {3}\n", N, nextResult, misMatch, ratio);
+
+                result = nextResult;
             }
 
             Console.WriteLine();
             Console.WriteLine();
-            Console.WriteLine("Calculations with Runge and Kutta method");
+            Console.WriteLine("Calculations with Runge and Kutta method\n");
 
-            double[] h = {0.1, 0.05, 0.025, 0.0125};
+            previousMismatch = -1;
+            misMatch = -1;
+            double h = 0.1;
             a = 0;
             b = 1;
+            e = 0.00001;
 
-            for (int i = 0; i < h.Length; i++)
+            result = RungeKutta.Calculate(a, b, h, true);
+
+            Console.WriteLine("h = {0} result: {1}", h, result);
+
+            while (misMatch > e || misMatch == -1)
             {
                 Console.WriteLine();
-                result = RungeKutta.Calculate(a, b, h[i], true);
-                misMatch = Math.Abs(RungeKutta.Calculate(a, b, h[i] / 2.0, false) - result) / (Math.Pow(2, 2) - 1);
-                Console.WriteLine("h = {0} result: {1} Runge's rule: {2}", h[i], result, misMatch);
+
+                h /= 2.0;
+
+                nextResult = RungeKutta.Calculate(a, b, h, true);
+
+                misMatch = Math.Abs(result - nextResult) / (Math.Pow(2, 4) - 1);
+
+                if (-1 == previousMismatch)
+                {
+                    ratio = 0;
+                }
+                else
+                {
+                    ratio = previousMismatch / misMatch;
+                }
+
+                previousMismatch = misMatch;
+
+                Console.WriteLine("h = {0} result: {1} Runge's rule: {2}\nRatio: {3}\n", h, nextResult, misMatch, ratio);
+
+                result = nextResult;
             }
 
             Console.ReadKey();
@@ -60,11 +133,10 @@ namespace App
         {
             return Math.Sqrt(x) * (1 + Math.Sqrt(x));
         }
-
+        
         public static double Function2(double x, double u)
         {
-            return -u + Math.Sin(x);
-            //return (0.7 - Math.Pow(u, 2)) * Math.Cos(x) + 0.3 * u;
+            return (0.7 - Math.Pow(u, 2)) * x + 0.3 * u;
         }
     }
 }
